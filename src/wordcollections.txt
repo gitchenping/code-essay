@@ -1,8 +1,0 @@
-python import try python from python tuple dict thread process while break while
-dict tuple list python next if else for range set dict thread process None False
-range for for list python set set open def class list re re math True sorted 
-object class def class self self new self class cls cls os sys os None format True
-file open file from try except try finally finally sys string pvm None print
-list dict object list python python class dict from import python2.7 python3.6 print
-def try raise try and or or and range and as if elif if pvm len requests requests
-import pvm pvm pyc py pyc class object object __init__ __init__ in in object
