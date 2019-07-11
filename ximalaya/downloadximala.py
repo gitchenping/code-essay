@@ -24,8 +24,6 @@ data=json.loads(r.text)
 #相关资源列表
 resource_list=data['album']['docs']
 
-
-
 #####
 #print resource_list[8]
 #sys.exit(0)
@@ -108,7 +106,7 @@ while i<=query_times:
 #########
 
 num=0	
-#执行下载操作，并重命名
+#执行下载操作，并重命名(如果名字解析失败，用编号代替）
 while len(res_dict_list)!=0:
 	
 	res=res_dict_list.pop(0)
