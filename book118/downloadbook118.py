@@ -5,6 +5,10 @@ import sys
 import os
 import re
 
+from requests.packages.urllib3.exceptions import InsecureRequestWarning
+requests.packages.urllib3.disable_warnings(InsecureRequestWarning)
+
+
 BOOKURL=sys.argv[1]
 BASEURL="https://max.book118.com"
 pngURL='https://max.book118.com/index.php?g=Home&m=Ajax&a=getPreviewData'
@@ -17,7 +21,7 @@ page_num=re.findall(u'id="pagenumber"> (\d{0,})页</span',r.text)[0]
 
 step=6
 
-for i in range(283,int(page_num)+1,step):
+for i in range(1,int(page_num)+1,step):
 	payload={"aid":int(aid),'page_number':i,'view_token':view_token}
 	rtext=requests.post(pngURL,data=payload,verify=False)
 	data_dict=json.loads(rtext.text)['data']
