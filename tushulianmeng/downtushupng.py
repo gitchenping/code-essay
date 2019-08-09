@@ -1,5 +1,5 @@
 #encoding=utf-8
-import sys
+import sys,os
 import requests
 import time,random
 import re
@@ -13,6 +13,7 @@ start_url=sys.argv[1]
 
 r=requests.get(start_url,headers=heads)      #里面发生重定向一次
 
+print r.encoding
 #取重定向页面url
 first_redict_url=r.history[0].__dict__['headers']['Location']
 #域名
@@ -27,9 +28,21 @@ newheads={"User-Agent":user_agent,"Referer":first_redict_url}
 pagerange=re.findall('ps:\'(.*?)\',',r.text)[0].split('-')
 startpage=pagerange[0]
 endpage=pagerange[1]
+
+#title
+title=re.findall(u'<title>(.*?)</',r.text)[0]
+
+
+tar_file=title+"_"+startpage+"-"+endpage+".tar.gz"
  
 jpgpath=re.findall('jpgPath:"(.*?)",',r.text)[0]
+
+
+#clear previous png
+os.system("cd /newtest;rm -f *.png")
+
 #
+
 for i in range(int(startpage),int(endpage)+1):
     
     stri=str(i)
@@ -46,8 +59,11 @@ for i in range(int(startpage),int(endpage)+1):
         fp.write(rr.content)
         print("第 %d 图片下载成功。"% i)
     time.sleep(5*random.random())
-
 '''
+print("begin to tar ,tar name is "+tar_file)
+os.system("cd /newtest;tar zcvf '"+tar_file.encode('utf-8')+"' *.png")
+
+
 #
 http://www.xinyunfuwu.com/firsttransfer.jsp?enc=07c988faaf5c6bc76d7a3c866ca369bebef1365ff2f2b306e0fa70824eb59c7eff8fc0a8914efee67958df89a9cd02aaf43e39565a5cc676b88467134807b716972510f628d514bd8fcd8310521e4d08a3694447e96e47b2fa466d43bed1b10701986f970237d2353881601f5a637e2f1f684cd180f5a88a2d44deb2dbf02896a20eb35cb5b667f77a9ca7644e6aef74&unitid=7320
 
