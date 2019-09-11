@@ -58,9 +58,14 @@ detailqueryurl=BASE_URL+DETAIL_QUERY_URL
 urllist=get_url_info(detailqueryurl)
 
 rangelist=url_downrangelist.split('-')
-endurlnum=int(rangelist[0])
+if len(rangelist)==1:
+	endurlnum=int(rangelist[0])
+else:
+	endurlnum=int(rangelist[1])
 
-for num in range(endurlnum-1,endurlnum):
+starturlnum=int(rangelist[0])
+
+for num in range(starturlnum,endurlnum+1):
     
     sigleresource_pageinfo_url=BASE_URL+urllist[num]
     r=requests.get(sigleresource_pageinfo_url)
@@ -91,6 +96,6 @@ for num in range(endurlnum-1,endurlnum):
         a=os.system('cat '+str(i)+".ts >> 0.ts")
 	i+=1
 
-    a=os.system('mv 0.ts '+key_word+"_"+str(num+1)+".ts")
+    a=os.system('mv 0.ts '+key_word+"_"+str(num)+".ts")
     print("done！")
 
