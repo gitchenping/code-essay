@@ -67,7 +67,7 @@ starturlnum=int(rangelist[0])
 
 for num in range(starturlnum,endurlnum+1):
     
-    sigleresource_pageinfo_url=BASE_URL+urllist[num]
+    sigleresource_pageinfo_url=BASE_URL+urllist[num-1]
     r=requests.get(sigleresource_pageinfo_url)
     signurl=re.findall('player_data={(?:.*)"url":"(.*?)"',r.text)[0].replace('\\','')
     
