@@ -26,8 +26,15 @@ page_num=re.findall(u'id="pagenumber"> (\d{0,})页</span',r.text)[0]
 
 step=6
 
-for i in range(277,300,step):
-#for i in range(1,int(page_num)+1,step):
+if len(sys.argv)==4:
+	startpagenum=sys.argv[2]
+	endpagenum=sys.argv[3]
+else:
+	startpagenum=1
+	endpagenum=int(page_num)
+
+#for i in range(103,108,step):
+for i in range(int(startpagenum),int(endpagenum)+1,step):
 	payload={"aid":int(aid),'page_number':i,'view_token':view_token}
 	rtext=requests.post(pngURL,data=payload,verify=False)
         
