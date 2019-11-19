@@ -11,7 +11,9 @@ import re
 
 BASE_URL='http://www.gongfupian.com'
 
-YOUKU_URL='https://youku.com-ok-163.com'
+#YOUKU_URL='https://youku.com-ok-163.com'
+
+YOUKU_URL='https://youku.cdn2-youku.com'
 
 key_word=sys.argv[1]
 
@@ -22,6 +24,8 @@ current_timestamp=int(time.time()*1000)
 QUERY_URL='/index.php/ajax/suggest?mid=1&wd='+key_word+'&limit=10&'+str(current_timestamp)
 
 DETAIL_QUERY_URL='/index.php/voddetail/'
+
+DOWN_CHANNEL=2
 
 '''
 获取资源英文名字
@@ -46,7 +50,9 @@ def get_url_info(detailqueryurl):
     
     r=requests.get(detailqueryurl+enname)
     
-    rawlist=re.findall('<ul (?:.*)id="con_playlist_1">(.*?)</ul',r.text,flags=re.DOTALL)
+    rawlist=re.findall('<ul (?:.*)id="con_playlist_'+str(DOWN_CHANNEL)+'">(.*?)</ul',r.text,flags=re.DOTALL)
+    
+    #print(rawlist)
     
     reslist=re.findall('<li><a href="(.*?)">',rawlist[0])
     
@@ -75,13 +81,17 @@ for num in range(starturlnum,endurlnum+1):
     shareurl=re.findall('main = "(.*?)";',r.text)[0]
     mainurl_prefix=re.findall('(.*?)/index',shareurl)[0]
     
+    print(shareurl)    
     r=requests.get(YOUKU_URL+shareurl)
     mainurl_res=r.text.split('\n')[-1]
     tslisturl=YOUKU_URL+mainurl_prefix+"/"+mainurl_res
     
+    print(mainurl_res)
+
     r=requests.get(tslisturl)
     tslist=re.sub('#(?:.*)','',r.text).strip('\n').split('\n\n')
     
+    #print(tslist)
     tsurl_prefix=YOUKU_URL+mainurl_prefix+"/"+re.findall('(.*?)/index',mainurl_res)[0]+'/'
     
     index=0
