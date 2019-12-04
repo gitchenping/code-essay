@@ -1,17 +1,22 @@
-
 #encoding=utf-8
 import requests
 import json
 import sys
 import os
 import time
+import readline
 
+PAGE=1
 UID=195711234
 BASEURL='http://search.ximalaya.com'
 SEARCH_KW_URL_PREFIX="http://searchwsa.ximalaya.com/front/v1"
 KW_URL_PARA="?appid=0&categoryId=-1&condition=relation&core=album&device=android&deviceId=1e43bdd2-c7f5-33fb-b745-f9c3e291d5a2&fq=categoryId:-1&"+  \
 "kw={searchword}&live=true&network=wifi&operator=0&page=1&paidFilter=false&plan=c&recall=normal:group2&rows=20&search_version=2.6&"+  \
 "spellchecker=true&uid={userid}&version=6.6.21"
+
+#headers
+useragent="ting_6.6.21(Redmi+Note+4,Android23)"
+host="audio.pay.xmcdn.com"
 
 
 keyword=sys.argv[1]
@@ -29,11 +34,14 @@ uid=albuminfo['uid']
 
 
 starttime=str(int(round(time.time()*1000)))
-AUDIO_DOWNURL='http://61.179.224.86/mobile/download/v1/album/paid/'+albumid+"/1/true/"+str(starttime)+"?albumId="+albumid+"&isAsc=true&pageId=1&trackQualityLevel=0"
+AUDIO_DOWNURL='http://61.179.224.86/mobile/download/v1/album/paid/'+albumid+"/"+str(PAGE)+"/true/"+str(starttime)+"?albumId="+albumid+"&isAsc=true&pageId=1&trackQualityLevel=0"
 
-rawcookies=sys.argv[2]
+#rawcookies=sys.argv[2]
+with open('loginmobile.txt','r') as fp:
+	rawcookies=fp.read()
+
 #cookies 处理
-rawcookieslist=rawcookies.split(";")
+rawcookieslist=rawcookies.strip().split(";")
 
 cookiesdict={}
 for cookiesitem in rawcookieslist:
@@ -52,13 +60,24 @@ resourcelist=rjson['tracks']['list']
 #print resourcelist
 #exit(0)
 
+#for pc cookie
+print("there are total "+str(len(resourcelist))+" ji")
 resource_name_trackid=[]
 for resource in resourcelist:
 	title=resource['title']
 	trackId=resource['trackId']
 	uid=resource['uid']
+	
+	url=input("skip this item,please input number 0,now begin to download : "+title.encode('utf-8')+"\n")	
 
-	resource_name_trackid.append((title,trackId))
+	if url==0:
+		continue
+	
+	cmd="curl -s -o '"+title.encode('utf-8')+".m4a' " + '-H "user-agent:'+useragent+'"'+' -H "Host:'+host+'"' +" -b loginmobile.txt '"+ url+"'"
+	
+	ret=os.popen(cmd)	
+
+	#resource_name_trackid.append((title,trackId))
 	
 	'''
 	starttime=str(int(round(time.time()*1000)))
@@ -79,7 +98,7 @@ for resource in resourcelist:
 		fp.write(raudio.content)
 	print('done!')
 	'''
-print resource_name_trackid	
+#print resource_name_trackid	
 
 
 #print tracks
