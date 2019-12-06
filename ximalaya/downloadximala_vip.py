@@ -67,9 +67,13 @@ for resource in resourcelist:
 	title=resource['title']
 	trackId=resource['trackId']
 	uid=resource['uid']
+	try:
+		url=input("skip this item,please input number 0,now begin to download : "+title.encode('utf-8')+"\n")	
 	
-	url=input("skip this item,please input number 0,now begin to download : "+title.encode('utf-8')+"\n")	
-
+	except SyntaxError,e:
+		print("SyntaxError error,please input again")
+		url=input("skip this item,please input number 0,now begin to download : "+title.encode('utf-8')+"\n")
+		
 	if url==0:
 		continue
 	
