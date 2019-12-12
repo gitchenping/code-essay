@@ -59,11 +59,11 @@ for i in range(int(startpage),int(endpage)+1):
         fp.write(rr.content)
         print("第 %d 图片下载成功。"% i)
     time.sleep(5*random.random())
-'''
+
 print("begin to tar ,tar name is "+tar_file)
 os.system("cd /newtest;tar zcvf '"+tar_file.encode('utf-8')+"' *.png")
 
-
+'''
 #
 http://www.xinyunfuwu.com/firsttransfer.jsp?enc=07c988faaf5c6bc76d7a3c866ca369bebef1365ff2f2b306e0fa70824eb59c7eff8fc0a8914efee67958df89a9cd02aaf43e39565a5cc676b88467134807b716972510f628d514bd8fcd8310521e4d08a3694447e96e47b2fa466d43bed1b10701986f970237d2353881601f5a637e2f1f684cd180f5a88a2d44deb2dbf02896a20eb35cb5b667f77a9ca7644e6aef74&unitid=7320
 
