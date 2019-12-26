@@ -6,7 +6,7 @@ import os
 import time
 import readline
 
-PAGE=1
+PAGE=2
 UID=195711234
 BASEURL='http://search.ximalaya.com'
 SEARCH_KW_URL_PREFIX="http://searchwsa.ximalaya.com/front/v1"
