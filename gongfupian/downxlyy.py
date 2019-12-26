@@ -133,10 +133,16 @@ print "视频播放地址:"+video.encode('utf-8')
 
 #资源入口，https://163.com-163cdn.com/20190911/538_06df94e5/index.m3u8
 
-#1000k/hls/index.m3u8
+#1000k/hls/index.m3u8 or /20191026/OpwfCfDl/2000kb/hls/index.m3u8
 resindex=requests.get(video).text.split('\n')[2]
 
-res_ts_list_url=video.strip('index.m3u8')+resindex
+videopostfix=re.findall('https://(?:.*?)/(.*?)/index.m3u8',video)[0]
+
+res_ts_list_url_prefix=re.findall('https://(?:.*?)/',video)[0]
+if videopostfix in resindex:
+	res_ts_list_url=res_ts_list_url_prefix+resindex
+else:
+	res_ts_list_url=video.strip('index.m3u8')+resindex
 
 #获取ts 列表
 r=requests.get(res_ts_list_url)
@@ -146,7 +152,11 @@ tslist=re.sub('#(?:.*)','',r.text).strip('\n').split('\n\n')
 lents=len(tslist)
 print "需要下载 "+str(lents)+" 个资源,请耐心等待"
 
-tsurl_prefix=res_ts_list_url.strip('index.m3u8')
+if videopostfix not in tslist[0]:
+
+	tsurl_prefix=res_ts_list_url.strip('index.m3u8')
+else:
+	tsurl_prefix=res_ts_list_url_prefix
 
 multiprocess_download(tsurl_prefix,tslist)
 '''
