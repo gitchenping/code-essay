@@ -30,6 +30,7 @@ def multiprocess_download(tsurl_prefix,tslist):
 
 #默认下载线路
 chanel_default="okm3u8"
+allchanel=[u'okm3u8',u'kum3u8', u'zuidam3u8', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
 
 BASE_URL="https://m.xunleiyy.com"
 PLAY_URL="https://player.gxtstatic.com"
@@ -48,13 +49,29 @@ res_num=sys.argv[2]
 r_search=requests.get(SEARCH_URL+"?searchword="+keyword)
 
 #根据关键字，找出id
+url=''
+
 hreflist=re.findall('<a (.*?)</a>',r_search.text)
 
-url=''
-for rawurl in hreflist:
-    if keyword.decode('utf-8') in rawurl:
-        url=re.findall('href="(.*?)"',rawurl)[0]
-        break
+urllist=[ele for ele in hreflist if keyword.decode('utf-8') in ele and 'alt' not in ele]
+
+url_name_list=[ele.strip('href="').split('">') for ele in urllist]
+
+if len(urllist)>1:
+    print "there are "+str(len(urllist))+" resources,please choose favoured:"
+    index=0
+    for url_name in url_name_list:
+        index+=1
+        print '【'+str(index)+'】 '+url_name[1].encode('utf-8')+" : "+url_name[0].encode('utf-8')
+    
+    urlnum=input("输入顺序号或q(quit)，并按回车:")
+    if urlnum=='q':
+	sys.exit()
+    url=url_name_list[urlnum-1][0]
+else:
+    url=url_name_list[0][0]
+
+
 if url =="":
     print('resource is not found')
     sys.exit()
@@ -64,6 +81,7 @@ r_movie=requests.get(BASE_URL+url)
 
 #可用通道,[u'kum3u8', u'zuidam3u8', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
 chanellist=re.findall('<h3 (?:.*?)>(.*?)</h3',r_movie.text,flags=re.DOTALL)[1:-1]
+chanellist=[chanel for chanel in chanellist if chanel in allchanel]
 
 if chanel_default.decode('utf-8') not in chanellist:
     
