@@ -30,7 +30,7 @@ def multiprocess_download(tsurl_prefix,tslist):
 
 #默认下载线路
 chanel_default="okm3u8"
-allchanel=[u'okm3u8',u'kum3u8', u'zuidam3u8', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
+allchanel=[u'bwm3u8', u'mahua',u'okm3u8',u'kum3u8', u'zuidam3u8',u'yjm3u8',u'西瓜影音', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
 
 BASE_URL="https://m.xunleiyy.com"
 PLAY_URL="https://player.gxtstatic.com"
@@ -53,7 +53,8 @@ url=''
 
 hreflist=re.findall('<a (.*?)</a>',r_search.text)
 
-urllist=[ele for ele in hreflist if keyword.decode('utf-8') in ele and 'alt' not in ele]
+#urllist=[ele for ele in hreflist if keyword.decode('utf-8') in ele and 'alt' not in ele]
+urllist=[ele for ele in hreflist if '/movie/' in ele and 'alt' not in ele]
 
 url_name_list=[ele.strip('href="').split('">') for ele in urllist]
 
@@ -83,11 +84,22 @@ r_movie=requests.get(BASE_URL+url)
 chanellist=re.findall('<h3 (?:.*?)>(.*?)</h3',r_movie.text,flags=re.DOTALL)[1:-1]
 chanellist=[chanel for chanel in chanellist if chanel in allchanel]
 
-if chanel_default.decode('utf-8') not in chanellist:
-    
-    chanel=chanellist[0]
+if len(chanellist)>1:
+    print "there are "+str(len(chanellist))+" chanels,please choose favored:"
+    index=0
+    for chanel in chanellist:
+        index+=1
+        print '【'+str(index)+'】 '+chanel.encode('utf-8')
+    chanelnum=input("输入顺序号或q(quit)，并按回车:")
+    if chanelnum=='q':
+        sys.exit()
+    chanel=chanellist[chanelnum-1]
 else:
-    chanel=chanel_default
+    if chanel_default.decode('utf-8') not in chanellist:
+    
+    	chanel=chanellist[0]
+    else:
+    	chanel=chanel_default
 
 #资源特征，如/play/182872-2-0.html
 resstr=re.findall(chanel+"(?:.*?)href='(.*?)' target",r_movie.text)[0]
