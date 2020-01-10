@@ -5,6 +5,8 @@ import requests
 import time
 import re
 import os
+import urllib
+
 
 from multiprocessing import Pool
 
@@ -30,7 +32,7 @@ def multiprocess_download(tsurl_prefix,tslist):
 
 #默认下载线路
 chanel_default="okm3u8"
-allchanel=[u'bwm3u8', u'mahua',u'okm3u8',u'kum3u8', u'zuidam3u8',u'yjm3u8',u'西瓜影音', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
+allchanel=[u'bwm3u8', u'mahua',u'okm3u8',u'kum3u8', u'ckm3u8',u'zuidam3u8',u'yjm3u8',u'西瓜影音', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
 
 BASE_URL="https://m.xunleiyy.com"
 PLAY_URL="https://player.gxtstatic.com"
@@ -46,7 +48,7 @@ keyword=sys.argv[1]
 #下载的资源编号，默认从0开始
 res_num=sys.argv[2]
 
-r_search=requests.get(SEARCH_URL+"?searchword="+keyword)
+r_search=requests.get(SEARCH_URL+"?searchword="+keyword,verify=False)
 
 #根据关键字，找出id
 url=''
@@ -78,7 +80,7 @@ if url =="":
     sys.exit()
 
 #如https://m.xunleiyy.com/movie/id182872.html
-r_movie=requests.get(BASE_URL+url)
+r_movie=requests.get(BASE_URL+url,verify=False)
 
 #可用通道,[u'kum3u8', u'zuidam3u8', u'奇艺视频', u'qq播客', u'土豆视频', u'乐视视频', u'PPTV视频', u'搜狐视频']
 chanellist=re.findall('<h3 (?:.*?)>(.*?)</h3',r_movie.text,flags=re.DOTALL)[1:-1]
@@ -102,7 +104,7 @@ else:
     	chanel=chanel_default
 
 #资源特征，如/play/182872-2-0.html
-resstr=re.findall(chanel+"(?:.*?)href='(.*?)' target",r_movie.text)[0]
+resstr=re.findall(chanel+"(?:.*?)href='(.*?)' target",r_movie.text,flags=re.DOTALL)[0]
 
 #实际资源编号
 tezhenlist=resstr.split('-')
@@ -112,17 +114,30 @@ realresstr=tezhenlist[0]+"-"+tezhenlist[1]+"-"+str(int(res_num)-1)+'.html'
 playurl=BASE_URL+realresstr
 print playurl
 
-rawresurl=requests.get(playurl,headers=headers).text
+rawresurl=requests.get(playurl,headers=headers,verify=False).text
 #得到资源的播放地址，如https://player.gxtstatic.com/vipplay.php?url=https://163.com-163cdn.com/20190911/538_06df94e5/index.m3u8&h=240
-resplayurl=re.findall('src="'+VIP_PLAY_URL+'(.*?)"',rawresurl)[0]
-print resplayurl
 
-#得到资源的存放地址，如
-resstoreurl=requests.get(VIP_PLAY_URL+resplayurl).text
+try:
+	resplayurl=re.findall('src="'+VIP_PLAY_URL+'(.*?)"',rawresurl)[0]
 
-resstoreurl=re.findall('src="'+PLAY_URL+'(.*?)"',resstoreurl)[0]
+	print resplayurl
 
-print resstoreurl
+	#得到资源的存放地址，如
+	resstoreurl=requests.get(VIP_PLAY_URL+resplayurl).text
+
+	resstoreurl=re.findall('src="'+PLAY_URL+'(.*?)"',resstoreurl)[0]
+
+	print resstoreurl
+except:
+	
+	if re.search('VideoInfoList',rawresurl):
+		videoinfolist=re.findall('VideoInfoList=unescape\((.*?)\)',rawresurl)[0]
+		videotextlist=urllib.unquote(videoinfolist)
+		urldecode_videotextlist=re.findall('(https.*?index.m3u8)',videotextlist)
+
+		resstoreurl='/m3u8ck.php?url='+urldecode_videotextlist[int(res_num)-1]
+
+
 
 #实际vedio地址
 vediourl=requests.get(PLAY_URL+resstoreurl).text
