@@ -120,24 +120,24 @@ rawresurl=requests.get(playurl,headers=headers,verify=False).text
 try:
 	resplayurl=re.findall('src="'+VIP_PLAY_URL+'(.*?)"',rawresurl)[0]
 
-	print resplayurl
+	print "resplayurl is: "+ resplayurl
 
 	#得到资源的存放地址，如
 	resstoreurl=requests.get(VIP_PLAY_URL+resplayurl).text
 
 	resstoreurl=re.findall('src="'+PLAY_URL+'(.*?)"',resstoreurl)[0]
 
-	print resstoreurl
+	print "resstoreurl is: " +resstoreurl
 except:
 	
 	if re.search('VideoInfoList',rawresurl):
 		videoinfolist=re.findall('VideoInfoList=unescape\((.*?)\)',rawresurl)[0]
 		videotextlist=urllib.unquote(videoinfolist)
 		urldecode_videotextlist=re.findall('(https.*?index.m3u8)',videotextlist)
-
+		print(urldecode_videotextlist)
 		resstoreurl='/m3u8ck.php?url='+urldecode_videotextlist[int(res_num)-1]
 
-
+resstoreurl='/m3u8ck.php?url='+'https://xigua-cdn.haima-zuida.com/20200112/229_c514ab2b/index.m3u8'
 
 #实际vedio地址
 vediourl=requests.get(PLAY_URL+resstoreurl).text

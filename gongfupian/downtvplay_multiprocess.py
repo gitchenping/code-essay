@@ -1,4 +1,6 @@
 #encoding=utf-8
+
+#usage:python downtvplay_multiprocess.py 大唐女法医 1
 import sys,os
 import requests
 import time,random
@@ -13,7 +15,8 @@ PROCESSNUM=3
 
 BASE_URL='http://www.gongfupian.com'
 
-YOUKU_URL='https://youku.com-ok-163.com'
+#YOUKU_URL='https://youku.com-ok-163.com'
+YOUKU_URL='https://youku.cdn2-okzy.com'
 
 key_word=sys.argv[1]
 
