@@ -1,3 +1,5 @@
+#encoding=utf-8
+
 import requests
 import time
 import random
@@ -32,25 +34,29 @@ def progressbar(processnum,totalnum):
     print('【'+j+'】->'+str(scale)+'%\r'),
     sys.stdout.flush()
 
-for i in range(1,totalpage+1):
+try:
+	for i in range(1,totalpage+1):
 	
-	delay=random.randint(1,10)*0.3
+		delay=random.randint(1,10)*0.3
 
-	time.sleep(delay)
+		time.sleep(delay)
 		
-	atime=time.time()*1000
-	requesttime=str(atime).split('.')[0]
+		atime=time.time()*1000
+		requesttime=str(atime).split('.')[0]
  
 	
-	#rtext=requests.get(bookurl+str(i)+'?t='+str(requesttime),headers=headers,cookies=cookies)
+		#rtext=requests.get(bookurl+str(i)+'?t='+str(requesttime),headers=headers,cookies=cookies)
 	
-	rtext=s.get(bookurl+str(i)+'?t='+str(requesttime))		
+		rtext=s.get(bookurl+str(i)+'?t='+str(requesttime))		
 
-	with open(str(i)+'.pdf','wb') as f:
-		f.write(rtext.content)
+		with open(str(i)+'.pdf','wb') as f:
+			f.write(rtext.content)
 
-	progressbar(i,totalpage)
+		progressbar(i,totalpage)
+except Exception as e:
+	print(e)
+finally:
 
-print("")
-#logout
-s.get('http://shuxiang.chineseall.cn/sso/logout.jsps')
+	print("")
+	#logout
+	s.get('http://shuxiang.chineseall.cn/sso/logout.jsps')
