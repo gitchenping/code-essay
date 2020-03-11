@@ -1,14 +1,36 @@
 import requests
 import time
 import random
+import os,sys
 
+#usage:python downshuxiang.py http://shuxiang.chineseall.cn/v3/book/read/Mu4yg/pdf/ 326
 
-bookurl='http://shuxiang.chineseall.cn/v3/book/content/Mu4yg/pdf/'
-totalpage=326
-cookies={'_Tvt5MJ89bV_':'A22737851ECCDF52E474A79D3DFC1295DBB1F631052C5F70829F790B2658FD8B43177294B373FF4AAD047522759976B85B358008E3DD44F52E217B7412EB142E'}
+#bookurl='http://shuxiang.chineseall.cn/v3/book/content/isCmg/pdf/'
+#totalpage=326
+#cookies={'_Tvt5MJ89bV_':'605E52501D5E3259C8B628C3A95B7B3DB143DAAE10C929CE9CA9D88DB5991EA6FFCAF2B47CD0A00F1F9B6E34EFE097E19B14A0EE5D082FBE891C6FAE0253BFCC'}
 
 headers={'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.100 Safari/537.36','Host': 'shuxiang.chineseall.cn'}
 
+#login
+s=requests.Session()
+data={"userName":"sxpingchen","userPass":"sx20128250"}
+loginurl='http://shuxiang.chineseall.cn/sso/ajaxLogin.action'
+
+r=s.post(loginurl,data=data)
+
+
+
+bookurl=sys.argv[1]
+totalpage=int(sys.argv[2])
+
+bookurl=bookurl.replace('read','content')
+bookurl=bookurl.replace('PDF','pdf')
+
+def progressbar(processnum,totalnum):
+    scale=int(float(processnum)/totalnum*100)
+    j = '#'*scale
+    print('【'+j+'】->'+str(scale)+'%\r'),
+    sys.stdout.flush()
 
 for i in range(1,totalpage+1):
 	
@@ -20,7 +42,15 @@ for i in range(1,totalpage+1):
 	requesttime=str(atime).split('.')[0]
  
 	
-	rtext=requests.get(bookurl+str(i)+'?t='+str(requesttime),headers=headers,cookies=cookies)
+	#rtext=requests.get(bookurl+str(i)+'?t='+str(requesttime),headers=headers,cookies=cookies)
+	
+	rtext=s.get(bookurl+str(i)+'?t='+str(requesttime))		
 
 	with open(str(i)+'.pdf','wb') as f:
 		f.write(rtext.content)
+
+	progressbar(i,totalpage)
+
+print("")
+#logout
+s.get('http://shuxiang.chineseall.cn/sso/logout.jsps')
