@@ -31,16 +31,12 @@ search_kw_url=SEARCH_KW_URL_PREFIX+KW_URL_PARA.format(searchword=keyword,userid=
 
 album_rawinfo=requests.get(search_kw_url).text
 
-album_rawinfo_json=json.loads(album_rawinfo)
 
 
-albuminfo=album_rawinfo_json['response']['docs'][0]
-albumid=str(albuminfo['price_types'][0]['id'])
-uid=albuminfo['uid']
 
 
-starttime=str(int(round(time.time()*1000)))
-AUDIO_DOWNURL='http://61.179.224.86/mobile/download/v1/album/paid/'+albumid+"/"+str(PAGE)+"/true/"+str(starttime)+"?albumId="+albumid+"&isAsc=true&pageId=1&trackQualityLevel=0"
+AUDIO_DOWNURL='http://140.207.215.228/mobile/download/v1/album/paid/12537472/2/true/ts-1583120853113?albumId=12537472&isAsc=true&pageId=1&trackQualityLevel=0'
+
 
 #rawcookies=sys.argv[2]
 with open('loginmobile.txt','r') as fp:
@@ -124,7 +120,7 @@ for resource,url in zip(resourcelist,urllist):
 		continue
         print("begin download "+title)
 	raudio=requests.get(downurl)
-	with open('./'+title+'.m4a','w') as fp:
+	with open('./'+title.encode('gbk')+'.m4a','w') as fp:
 		fp.write(raudio.content)
 	print('done!')
 	'''

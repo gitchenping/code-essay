@@ -26,7 +26,7 @@ DETAIL_QUERY_URL='/index.php/voddetail/'
 
 DOWN_CHANNEL=1         #下载通道
 
-start=1200
+start=0
 
 '''
 获取资源英文名字
