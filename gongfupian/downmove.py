@@ -6,7 +6,7 @@ import json
 import re
 
 '''
-常量
+常量,----
 '''
 
 BASE_URL='http://www.gfpian.com'
